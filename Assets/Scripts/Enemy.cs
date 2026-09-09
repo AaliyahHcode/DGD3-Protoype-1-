@@ -3,7 +3,7 @@ using UnityEngine;
 public class Enemy : MonoBehaviour
 {
     public int damage = 1; //lose one heart/health
-    public float knockbackForce = 2.5f;
+    public float knockbackForce = 3.5f;
     public float enemyMoveSpeed = 2.5f;
     private Rigidbody2D rb; //enemies rb
 
