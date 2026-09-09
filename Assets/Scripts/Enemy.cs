@@ -26,12 +26,60 @@ public class Enemy : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+        rb = GetComponent<Rigidbody2D>();
+        startingPosition = transform.position;
+        NewWanderTarget();
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
-        
+        float distanceToThePlayer = Vector2.Distance(rb.position, player.position);
+        //after enemy finds distance to the player then chase the player if they are close enough
+        if (distanceToThePlayer <= detectionRange)
+        {
+            Vector2 newPosition = Vector2.MoveTowards(rb.position, player.position, enemyMoveSpeed * Time.fixedDeltaTime);
+            rb.MovePosition(newPosition); //rb2d to move btter for physics and barriers
+        }
+        else
+        {
+            Wander();
+        }
+    }
+
+    void Wander()
+    {
+        Vector2 newPosition = Vector2.MoveTowards(rb.position, wanderToward, enemyMoveSpeed * Time.fixedDeltaTime);
+
+        rb.MovePosition(newPosition); //use rb to move
+        if (Vector2.Distance(rb.position, wanderToward) < 0.1f) //has the enemy reached wadrer destination
+        {
+            waittimer += Time.fixedDeltaTime;//count how long the wait
+
+            if(waittimer >= waittime) //when time is over choose another location
+            {
+                NewWanderTarget();
+                waittimer = 0f; //reset timer
+            }
+        }
+    }
+
+    void NewWanderTarget()
+    {
+        Vector2 randomDirection = Random.insideUnitCircle * wanderRange;//choosing a random point in the wander area
+        wanderToward = startingPosition + randomDirection; //enemy wander in it's own area in  a random direction from original spot
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            PHealth health = collision.gameObject.GetComponent<PHealth>();
+            if (health != null)
+            {
+                Vector2 direction = (collision.transform.position - transform.position).normalized;
+                health.TakeDamage(damage, direction * knockbackForce);
+            }
+        }
     }
 }
