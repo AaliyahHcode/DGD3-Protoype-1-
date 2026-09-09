@@ -8,6 +8,7 @@ public class GameManagerMines : MonoBehaviour
     public GameObject player;
 
     public GameObject explode;
+    public GameObject winText;
 
     private void Awake()
     {
@@ -28,6 +29,10 @@ public class GameManagerMines : MonoBehaviour
     public void Win()
     {
         Debug.Log("You survived!");
+        if (winText != null)
+        {
+            winText.SetActive(true);
+        }
         Time.timeScale = 0; //stop game
     }
 }
