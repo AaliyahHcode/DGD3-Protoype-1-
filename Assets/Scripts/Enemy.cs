@@ -34,16 +34,21 @@ public class Enemy : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        float distanceToThePlayer = Vector2.Distance(rb.position, player.position);
+        //float distanceToThePlayer = Vector2.Distance(rb.position, player.position);
+        //instead do player's dist from enemy's original spawn position and distancr from actual enemy
+        float playerdistanceFromEnemyOriginal = Vector2.Distance(startingPosition, player.position);
+        float playerdistanceFromEnemy = Vector2.Distance(rb.position, player.position);
+
         //after enemy finds distance to the player then chase the player if they are close enough
-        if (distanceToThePlayer <= detectionRange)
+        // use && - player needs to be in enemy's FIXED area AND close enough to the enemy to be detected (should prevent the earlier mistake of following all over the map)
+        if (playerdistanceFromEnemy <= detectionRange && playerdistanceFromEnemyOriginal <= wanderRange)
         {
-            Vector2 newPosition = Vector2.MoveTowards(rb.position, player.position, enemyMoveSpeed * Time.fixedDeltaTime);
+            Vector2 newPosition = Vector2.MoveTowards(rb.position, player.position, enemyMoveSpeed * Time.fixedDeltaTime); //movetoward player
             rb.MovePosition(newPosition); //rb2d to move btter for physics and barriers
         }
         else
         {
-            Wander();
+            Wander(); //player outside fixed area then wander
         }
     }
 
