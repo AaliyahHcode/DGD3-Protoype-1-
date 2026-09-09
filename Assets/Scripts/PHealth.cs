@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PHealth : MonoBehaviour
 {
@@ -16,9 +17,13 @@ public class PHealth : MonoBehaviour
         UpdateHeart();
     }
 
-    public void TakeDamage()
+    public void TakeDamage(int damage, Vector2 knockback) //unity documentation
     {
+        currentHealth -= damage;
+        rb.AddForce(knockback, ForceMode2D.Impulse);
+        UpdateHeart();
 
+        if(currentHealth <= 0) { Die(); }
     }
     void UpdateHeart()
     {
@@ -37,7 +42,7 @@ public class PHealth : MonoBehaviour
 
     void Die()
     {
-        GameManager.Instantiate.RespawnPlayer();
+        GameManagerMines.Instance.RespawnPlayer();
     }
 
     public void HealthReset() //restore hearts after respawn
